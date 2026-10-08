@@ -7,39 +7,76 @@ class Student:
         self.honor = False
 
     def add_grade(self, grade):
+        if not isinstance(grade, (int, float)):
+            print("Error: Grade must be numeric.")
+            return False
+
+        if grade < 0 or grade > 100:
+            print("Error: Grade must be between 0 and 100.")
+            return False
+
         self.grades.append(grade)
+        return True
 
     def calculate_average(self):
-        total = 0
+        if not self.grades:
+            return 0
 
-        for grade in self.grades:
-            total += grade
+        return sum(self.grades) / len(self.grades)
 
-        return total / len(self.grades)
+    def get_letter_grade(self):
+        average = self.calculate_average()
+
+        if average >= 90:
+            return "A"
+        if average >= 80:
+            return "B"
+        if average >= 70:
+            return "C"
+        if average >= 60:
+            return "D"
+        return "F"
+
+    def check_passed(self):
+        self.is_passed = self.calculate_average() >= 60
+        return self.is_passed
 
     def check_honor(self):
-        if self.calculate_average() >= 90:
-            self.honor = True
+        self.honor = self.calculate_average() >= 90
+        return self.honor
 
     def delete_grade(self, index):
+        if index < 0 or index >= len(self.grades):
+            print("Error: Invalid grade index.")
+            return False
+
         del self.grades[index]
+        return True
 
     def report(self):
+        average = self.calculate_average()
+        letter = self.get_letter_grade()
+        passed = self.check_passed()
+        honor = self.check_honor()
+
         print("ID:", self.student_id)
         print("Name:", self.name)
         print("Grades Count:", len(self.grades))
+        print("Average:", round(average, 2))
+        print("Letter Grade:", letter)
+        print("Status:", "Passed" if passed else "Failed")
+        print("Honor Roll:", "Yes" if honor else "No")
 
 
 def main():
-    student = Student("x", "")
+    student = Student("S001", "Steven")
 
-    student.add_grade(100)
-    student.add_grade(50)
+    student.add_grade(95)
+    student.add_grade(92)
+    student.add_grade(90)
 
-    student.calculate_average()
-    student.check_honor()
+    student.delete_grade(2)
 
-    student.delete_grade(1)
     student.report()
 
 
